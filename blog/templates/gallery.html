@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Gallery</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            padding: 20px;
+        }
+        .photo-card {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            width: 300px;
+            text-align: center;
+        }
+        img {
+            width: 100%;
+            border-radius: 10px;
+        }
+        h3 {
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    {% for photo in photos %}
+        <div class="photo-card">
+            <a href="{% url 'photo_detail' photo.id %}"></a>
+                <img src="{{ photo.image.url }}" alt="{{ photo.title }}">
+            </a>
+            <h3>{{ photo.title }}</h3>
+            <p>{{ photo.description|truncatewords:10 }}</p>
+        </div>
+    {% endfor %}
+</body>
+</html>
