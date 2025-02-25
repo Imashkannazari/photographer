@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Photography Portfolio</title>
+</head>
+<body>
+    <h1>My Photography Gallery</h1>
+    <div style="display: flex; flex-wrap: wrap; gap: 20px;">
+        {% for photo in photos %}
+            <div style="border: 1px solid #ccc; padding: 10px;">
+                <img src="{{ photo.image.url }}" alt="{{ photo.title }}" style="width: 300px; height: auto;">
+                <h3>{{ photo.title }}</h3>
+                <p>{{ photo.description }}</p>
+            </div>
+        {% endfor %}
+    </div>
+</body>
+</html>
