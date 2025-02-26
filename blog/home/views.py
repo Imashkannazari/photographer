@@ -1,6 +1,7 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse
-from .models import Photo, Service, Contact
+from .models import Photo, Service, Contact, Category
+from .forms import PhotoForm
 
 def home(request):
     photos = Photo.objects.all()
@@ -20,10 +21,28 @@ def contact(request):
         return render(request, 'contact.html', {'success': True})
     return render(request, 'contact.html')
 
+
 def gallery(request):
-    photos = Photo.objects.all()
-    return render(request, 'gallery.html', {'photos': photos})
+    category = request.GET.get('category')
+    if category:
+        photos = Photo.objects.filter(category__name=category)
+    else:
+        photos = Photo.objects.all()
+
+    categories = Category.objects.all()
+    return render(request, 'gallery.html', {'photos': photos, 'categories': categories})
 
 def photo_detail(request, photo_id):
     photo = get_object_or_404(Photo, id=photo_id)
     return render(request, 'photo_detail.html', {'photo': photo})
+
+
+def upload_photo(request):
+    if request.method == 'POST':
+        form = PhotoForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect('gallery')
+    else:
+        form = PhotoForm()
+    return render(request, 'upload_photo.html', {'form': form})

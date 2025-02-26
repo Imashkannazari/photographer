@@ -1,44 +1,113 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fa">
 <head>
     <meta charset="UTF-8">
-    <title>Gallery</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>گالری عکس</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
+            text-align: center;
+            padding: 20px;
+        }
+        h1 {
+            color: #333;
+        }
+        .category-list {
+            margin-bottom: 20px;
+        }
+        .category-list button {
+            padding: 10px 20px;
+            margin: 5px;
+            border: none;
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .category-list button.active {
+            background-color: #0056b3;
+        }
+        .gallery {
             display: flex;
             flex-wrap: wrap;
             gap: 20px;
             justify-content: center;
-            padding: 20px;
         }
         .photo-card {
-            background: white;
+            border: 1px solid #ddd;
             border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-            padding: 20px;
-            width: 300px;
-            text-align: center;
+            overflow: hidden;
+            max-width: 300px;
         }
-        img {
+        .photo-card img {
             width: 100%;
-            border-radius: 10px;
+            height: auto;
+            display: block;
         }
-        h3 {
-            margin: 10px 0;
+        .photo-card h3 {
+            padding: 10px;
+            margin: 0;
         }
     </style>
 </head>
 <body>
+    <h1>گالری عکس‌ها</h1>
+
+    <!-- فیلتر دسته‌بندی -->
+    <div class="category-list">
+        <button onclick="filterPhotos('')" class="active">همه</button>
+        {% for category in categories %}
+            <button onclick="filterPhotos('{{ category.name }}')">{{ category.name }}</button>
+        {% endfor %}
+    </div>
+
+    <!-- گالری عکس‌ها -->
+    <!-- گالری عکس‌ها -->
+<div class="gallery">
     {% for photo in photos %}
-        <div class="photo-card">
-            <a href="{% url 'photo_detail' photo.id %}"></a>
-                <img src="{{ photo.image.url }}" alt="{{ photo.title }}">
-            </a>
-            <h3>{{ photo.title }}</h3>
-            <p>{{ photo.description|truncatewords:10 }}</p>
+        <div class="photo-card" data-category="{{ photo.category.name }}">
+            <img src="{{ photo.image.url }}" alt="{{ photo.title }}">
+            <h3>
+                <a href="{% url 'photo_detail' photo.id %}" style="text-decoration: none; color: #007bff;">
+                    {{ photo.title }}
+                </a>
+            </h3>
         </div>
+    {% empty %}
+        <p>هیچ عکسی موجود نیست!</p>
     {% endfor %}
+</div>
+<a href="{% url 'upload_photo' %}" style="
+    display: inline-block;
+    padding: 10px 20px;
+    margin-bottom: 20px;
+    background-color: #28a745;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+">
+    + افزودن عکس جدید
+</a>
+
+
+    <script>
+        function filterPhotos(category) {
+            const cards = document.querySelectorAll('.photo-card');
+            const buttons = document.querySelectorAll('.category-list button');
+
+            cards.forEach(card => {
+                const cardCategory = card.getAttribute('data-category');
+                if (category === '' || cardCategory === category) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+
+            buttons.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+        }
+    </script>
 </body>
 </html>
